@@ -15,7 +15,7 @@ A lightweight Imba module for loading and handling JSON-based localization files
 
 Just include the module in your project or copy the class directly into your codebase.
 ```bash
-npm install imba-localization-loader
+npm install imba-localization
 ```
 
 ## 🚀 Usage
@@ -40,7 +40,7 @@ Here’s an example of how to use it in an Imba app:
 ```imba
 # app.imba
 
-import Localization from 'imba-localization-loader'
+import Localization from 'imba-localization'
 
 # To create an instance pass the address to the JSON and (optionally) default language
 const loc = new Localization("ADDRESS_TO_JSON", "en")
