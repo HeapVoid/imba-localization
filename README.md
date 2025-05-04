@@ -1,5 +1,5 @@
 
-# Localization Loader for Imba
+# JSON Localization for Imba
 
 A lightweight Imba module for loading and handling JSON-based localization files in web applications. This utility fetches a localization file, selects the appropriate language based on the user's browser settings (or falls back to a default), and allows you to easily access localized strings throughout your application.
 
