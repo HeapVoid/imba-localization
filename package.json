@@ -1,6 +1,6 @@
 {
   "name": "imba-localization",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HeapVoid/imba-localization.git"
@@ -10,7 +10,8 @@
     "imba": "latest"
   },
   "scripts": {
-    "bundle": "bunx bimba index.imba --outdir . --minify"
+    "bundle": "bunx bimba index.imba --outdir . --minify", 
+    "pub": "bunx bimba index.imba --outdir . --minify && bun publish"
   },
   "description": "A class to make using language localizations in Imba easier.",
   "keywords": ["imba", "theme", "localization"],
