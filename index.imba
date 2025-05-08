@@ -1,4 +1,4 @@
-export default class Localization
+export class Localization
 	onready
 	onerror
 	onchange
@@ -17,7 +17,9 @@ export default class Localization
 		return new Proxy self, {
 			get: do(target, p, receiver)
 				return Reflect.get(target, p, receiver) if self[p]
+				return target.languages[p] if target.languages[p]
 				return target.languages[active][p] if target.languages[active] and target.languages[active][p]
+				onerror('no_localization_key', p) if onerror isa Function
 				return ''
 		}
 				
@@ -31,19 +33,19 @@ export default class Localization
 		languages = data if data
 		if !languages[default]
 			if onerror isa Function
-				onerror('no_default_localization')
+				onerror('no_default_localization', default)
 			else
 				console.log('There is no Localization for the default language', default)
 			return
-		#active = languages[preferred] ? preferred : default
+		active = preferred
 		onready! if onready isa Function
 
 	get active
 		return languages[#active] ? #active : default
 	
 	set active name
-		if languages[name]
+		if name and languages[name]
 			#active = name
-			onchange(name) if onchange isa Function
 		else
-			console.log('Localization for the language not found', name)
+			#active = languages[preferred] ? preferred : default
+		onchange(#active) if onchange isa Function

@@ -1,86 +1,259 @@
 
-# JSON Localization for Imba
+# 🌐 JSON Localization for Imba
 
-A lightweight Imba module for loading and handling JSON-based localization files in web applications. This utility fetches a localization file, selects the appropriate language based on the user's browser settings (or falls back to a default), and allows you to easily access localized strings throughout your application.
+A lightweight Imba module for loading and handling JSON-based localization files in web applications. This utility fetches a localization file, selects the appropriate language based on the user's browser settings (or falls back to a default), and allows you to easily access localized strings throughout your application. Package includes helpful components for language selection and localization management.
 
 ## ✨ Features
 
-- Automatically detects the user's preferred language
-- Falls back to a default language if needed
-- Proxy-based access to translation strings
-- Supports `onready`, `onchange` and `onerror` events
-- Simple to use in any Imba-based web application
+- 🔍 **Automatic language detection** - Uses the user's browser language settings
+- 🔄 **Smart fallback system** - Falls back to a default language when needed
+- 🧠 **Intuitive access** - Proxy-based access to translation strings
+- 📡 **Event handling** - Support for `onready`, `onchange`, and `onerror` events
+- 🚀 **Simple integration** - Easy to use in any Imba-based web application
+- 🧩 **LanguageSelector tag** - Plug and play component for switching languages
+
+## 📘 Notes
+
+- Language detection uses the first two characters from `navigator.language` (e.g., `en` from `en-US`)
+- If the preferred language isn't available in your JSON file, it falls back to the default language
+- Returns an empty string for missing translation keys instead of throwing errors
+
 
 ## 📦 Installation
 
-Just include the module in your project or copy the class directly into your codebase.
 ```bash
+# NodeJs
 npm install imba-localization
+# or Bun
+bun add imba-localization
 ```
 
-## 🚀 Usage
+## 🚀 Quick Start
 
-First of all, preload the localization file in HTML head, so it is loaded simultaniously with the application itself:
+### 1️⃣ Preload the localization file
+
+Add this to your HTML head to load the localization file simultaneously with your application:
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-    ...
-		<link rel="preload" href="ADDRESS_TO_JSON" as="fetch" type="application/json" crossorigin="anonymous"/>
-    ...
-	</head>
-	<body>
-	</body>
+  <head>
+    <!-- Other head elements -->
+    <link rel="preload" href="path/to/lang.json" as="fetch" type="application/json" crossorigin="anonymous"/>
+  </head>
+  <body>
+    <!-- Your app -->
+  </body>
 </html>
 ```
-Such localization file can be placed on any static hosting. In my experience Github Pages works perfectly for that purpose. Moreover, it also allows to update localization by just pushing updated file to the repository.
 
-Here’s an example of how to use it in an Imba app:
+> 💡 **Tip:** You can host your localization file on GitHub Pages or any static hosting service, making it easy to update translations without redeploying your application.
+
+### 2️⃣ Initialize in your Imba app
 
 ```imba
 # app.imba
+import { Localization } from 'imba-localization'
 
-import Localization from 'imba-localization'
+# Create an instance with the JSON URL and optional default language
+const loc = new Localization("path/to/lang.json", "en")
 
-# To create an instance pass the address to the JSON and (optionally) default language
-const loc = new Localization("ADDRESS_TO_JSON", "en")
-
+# Set up event handlers
 loc.onready = do
-	console.log loc['hello']      # Output: "Hello" (or translated value)
-	console.log loc['goodbye']    # Output: "Goodbye" (or translated value)
+  console.log "Localization loaded!"
+  
+  # Access translations in various ways:
+  console.log loc.hello               # Using dot notation
+  console.log loc['goodbye']          # Using bracket notation
+  console.log loc['user']['profile']  # Accessing nested properties
 
-loc.onerror = do(msg, err)
-	console.error "Localization load error:", msg, err
+loc.onerror = do(error, details)
+  # The Localization object can return following types of errors:
+  # 'no_localization_file' - if there were a problem when downloading JSON file
+  # 'no_default_localization' - if there is not localization in the file for the default language
+  # 'no_localization_key' - if there is no requiered (from the interface) key in the file
+  console.error "Localization error:", error, details
 
-loc.change = do(language)
-	console.error "Language changed:", language
+loc.onchange = do(lang_key)
+  console.log "Language changed to:", lang_key
 
-# Later in your app, you can switch the language:
-loc.active = "fr"   # Sets the active language to French (if available)
-
-# The language file can be structured and accessed as usual:
-console.log loc['forms']['login']['buttons']['enter']
-
+# Later, switch the active language:
+loc.active = "fr"  # Changes to French if available
 ```
 
-## 📄 JSON File Format
+## 📄 JSON Structure
 
-The localization file (`/lang.json`) should look like this:
+Your localization file should follow this format:
 
 ```json
 {
   "en": {
-    "hello": "Hello",
-    "goodbye": "Goodbye"
+    "welcome": "Welcome",
+    "goodbye": "Goodbye",
+    "user": {
+      "profile": "Profile",
+      "settings": "Settings"
+    }
   },
   "fr": {
-    "hello": "Bonjour",
-    "goodbye": "Au revoir"
+    "welcome": "Bienvenue",
+    "goodbye": "Au revoir",
+    "user": {
+      "profile": "Profil",
+      "settings": "Paramètres"
+    }
   }
 }
 ```
 
-## 📘 Notes
+## 🛠️ API Reference
 
-- The module attempts to detect the language from `window.navigator.language`, using the first two characters (e.g., `en` from `en-US`).
-- If the preferred language isn't available, it uses `'en'` by default.
+### Constructor
+
+```imba
+new Localization(url, default = 'en')
+```
+
+- `url`: Path to your JSON localization file
+- `default`: Fallback language code (defaults to 'en')
+
+### Properties
+
+- `active`: Get or set the active language
+- `languages`: Object containing all loaded language data
+- `preferred`: Detected browser language (first 2 characters of `navigator.language`)
+
+### Events
+
+- `onready`: Called when localization data is successfully loaded
+- `onerror`: Called when an error occurs (`error`, `details`)
+- `onchange`: Called when the active language changes (`lang_key`)
+
+## 🧩 Components
+
+### LanguageSelector
+
+A customizable dropdown component that allows users to select from available in the JSON localization file languages.
+
+```imba
+import { Localization } from 'imba-localization'
+const loc = new Localization("path/to/lang.json", "en")
+
+import { LanguageSelector } from 'imba-localization/components'
+
+# In your UI component
+tag AppHeader
+    <self>
+      <LanguageSelector engine=loc> # engine attribute is mandatory
+```
+
+To make this component work as intended, your JSON file will need some adjustments. For each supported language you will need to define the display name for the language and also the country code for the flag to show (for example `en` language is used in `gb` and `us` countries):
+
+```json
+"en": {
+        "$": {
+            "name": "English",
+            "flag": "us"
+        }
+}
+```
+
+#### Visual Customization
+
+Here are CSS classes (and one variable) you can redefine:
+```imba
+css
+  $ease: 0.5s
+  .main 
+    cursor:pointer
+    rd:8px px:15px py:8px 
+    bgc:light-dark(#000000/10, #FFFFFF/20) 
+    fw:500 fs:13px 
+    ead:$ease
+	.main-active 
+    bgc:light-dark(#000000/20, #FFFFFF/30)
+	.main-flag 
+    mr:10px rd:50% w:20px h:20px
+	.main-name 
+    mr:10px
+	.main-arrow 
+    w:16px h:16px ml:auto
+    fill:light-dark(#000000,#FFFFFF) 
+    scale-y:-1 
+    ead:$ease
+	.menu 
+    t:100% l:50% x:-50% mt:2px rd:8px rd:8px py:5px zi:999
+    fw:500 fs:13px
+    backdrop-filter:blur(20px) 
+    bgc:light-dark(#000000/5, #FFFFFF/10) 
+    ead:$ease
+	.menu-item 
+    cursor:pointer
+    d:hflex px:10px py:5px rd:8px m:5px
+    bg@hover:light-dark(#000000/10, #FFFFFF/20)
+	.menu-item-icon 
+    h:20px w:20px mr:10px rd:50%
+	.menu-item-text 
+    fs:13px
+```
+LanguageSelector can be easily customized through CSS and Imba tag (class) inheritance. Here how the above classes can be adjusted via the inheritance:
+
+```imba
+import { LanguageSelector } from 'imba-localization/components'
+
+# Create an inheritent class
+tag Languages < LanguageSelector
+  css
+    $ease: 1s
+    .menu-item rd:2px
+    .menu-item-icon h:30px w:30px
+
+# Using the adjusted component
+tag MyApp
+    <self>
+      <Languages engine=loc>
+```
+
+#### Flag collections
+
+You can redefine the collection of flag icons through the `icons` attribute:
+
+```imba
+<LanguageSelector icons='https://flagicons.lipis.dev/flags/4x3/##.svg'>
+```
+There are many flag collections out there:
+- https://kapowaz.github.io/square-flags/flags/##.svg (default one)
+- https://hatscripts.github.io/circle-flags/flags/##.svg
+- https://flagcdn.com/##.svg
+- https://cdn.simplelocalize.io/public/v1/flags/##.svg
+- https://cdn.jsdelivr.net/gh/hampusborgos/country-flags@main/svg/##.svg
+- https://flagicons.lipis.dev/flags/4x3/##.svg
+
+You can use any other collection you prefer, just change the actual country code to `##` in the url, so the component could replace it with the actual code to obtain a flag for a needed country. 
+
+#### Dropdown arrow customization
+
+You can use any arrow icon you prefer (or remove it though CSS) by passing a tag of the image to the LanguageSelector `arrow` attribute:
+
+```imba
+tag SomeIcon
+	<self>
+		<svg viewBox="..." xmlns="http://www.w3.org/2000/svg">
+			<path d="...">
+
+
+<LanguageSelector arrow=SomeIcon>
+```
+
+### ArrowIcon
+
+An default arrow icon used in the LanguageSelector component is available as a separate icon (in case for some reason you don't want to use `imba-phosphor-icons` package by Sindre).
+
+```imba
+import {ArrowIcon} from 'imba-localization/components'
+
+tag App
+	<self>
+		<ArrowIcon>
+			css w:20px h:20px stroke:red
+```

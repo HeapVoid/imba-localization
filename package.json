@@ -1,27 +1,29 @@
 {
   "name": "imba-localization",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HeapVoid/imba-localization.git"
   },
-  "main": "./index.js",
+  "main": "index.js",
+  "module": "index.js",
+  "browser": "index.js",
   "devDependencies": {
-    "imba": "latest"
+    "imba": "latest",
+    "bimba-cli": "latest"
   },
   "scripts": {
-    "bundle": "bunx bimba index.imba --outdir . --minify", 
+    "bundle": "bunx bimba index.imba --outdir . --minify",
     "pub": "bunx bimba index.imba --outdir . --minify && bun publish"
   },
   "description": "A class to make using language localizations in Imba easier.",
   "keywords": ["imba", "theme", "localization"],
   "license": "MIT",
   "type": "module",
-  "dependencies": {
-    "bimba-cli": "^0.3.2"
-  },
   "files": [
     "index.imba",
-    "index.js"
+    "index.js",
+    "components.imba",
+    "components.d.ts"
   ]
 }
