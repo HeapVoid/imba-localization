@@ -36,7 +36,6 @@ export class Localization
 			else
 				console.log('There is no Localization for the default language', default)
 			return
-		active = preferred
 		onready! if onready isa Function
 
 	get active
