@@ -10,7 +10,7 @@ A lightweight Imba module for loading and handling JSON-based localization files
 - 🧠 **Intuitive access** - Proxy-based access to translation strings
 - 📡 **Event handling** - Support for `onready`, `onchange`, and `onerror` events
 - 🚀 **Simple integration** - Easy to use in any Imba-based web application
-- 🧩 **LanguageSelector tag** - Plug and play component for switching languages
+- 🧩 **<LanguageSelector>** - Plug and play component for switching languages
 
 ## 📘 Notes
 
@@ -70,15 +70,26 @@ loc.onready = do
 loc.onerror = do(error, details)
   # The Localization object can return following types of errors:
   # 'no_localization_file' - if there were a problem when downloading JSON file
-  # 'no_default_localization' - if there is not localization in the file for the default language
+  # 'no_default_localization' - if there is no localization in the file for the default language
   # 'no_localization_key' - if there is no requiered (from the interface) key in the file
   console.error "Localization error:", error, details
 
 loc.onchange = do(lang_key)
   console.log "Language changed to:", lang_key
 
-# Later, switch the active language:
+# Get the current localization code
+console.log loc.active
+
+# Switch the active language
 loc.active = "fr"  # Changes to French if available
+
+# Loop through all the localizations
+for key, data of loc.languages
+  console.log key, data
+
+# Get all the keys for the active language
+console.log loc.languages[loc.active]
+
 ```
 
 ## 📄 JSON Structure
@@ -119,7 +130,7 @@ new Localization(url, default = 'en')
 
 ### Properties
 
-- `active`: Get or set the active language
+- `active`: Get or set the code of the active language
 - `languages`: Object containing all loaded language data
 - `preferred`: Detected browser language (first 2 characters of `navigator.language`)
 
@@ -247,7 +258,7 @@ tag SomeIcon
 
 ### ArrowIcon
 
-An default arrow icon used in the LanguageSelector component is available as a separate icon (in case for some reason you don't want to use `imba-phosphor-icons` package by Sindre).
+The default arrow icon used in the LanguageSelector component is available as a separate icon (in case for some reason you don't want to use [imba-phosphor-icons](https://www.npmjs.com/package/imba-phosphor-icons) package by Sindre).
 
 ```imba
 import {ArrowIcon} from 'imba-localization/components'
