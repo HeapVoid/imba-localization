@@ -1,6 +1,6 @@
 {
   "name": "imba-localization",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HeapVoid/imba-localization.git"
@@ -25,5 +25,12 @@
     "index.js",
     "components.imba",
     "components.d.ts"
-  ]
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./components": {
+      "import": "./components.imba",
+      "types": "./components.d.ts"
+    }
+  }
 }
