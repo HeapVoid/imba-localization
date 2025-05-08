@@ -6,11 +6,12 @@ A lightweight Imba module for loading and handling JSON-based localization files
 ## ✨ Features
 
 - 🔍 **Automatic language detection** - Uses the user's browser language settings
+* 💾 **Persistence**: Stores user choice in local storage across sessions.
 - 🔄 **Smart fallback system** - Falls back to a default language when needed
 - 🧠 **Intuitive access** - Proxy-based access to translation strings
 - 📡 **Event handling** - Support for `onready`, `onchange`, and `onerror` events
 - 🚀 **Simple integration** - Easy to use in any Imba-based web application
-- 🧩 **<LanguageSelector>** - Plug and play component for switching languages
+- 🧩 **`<LanguageSelector>`** - Plug and play component for switching languages
 
 ## 📘 Notes
 

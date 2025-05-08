@@ -4,7 +4,6 @@ export class Localization
 	onchange
 	languages = {}
 	preferred = (window..navigator..language || 'en-US').slice(0, 2)
-	#active
 	default
 
 	def constructor url, dft = 'en'
@@ -41,11 +40,14 @@ export class Localization
 		onready! if onready isa Function
 
 	get active
-		return languages[#active] ? #active : default
+		const saved = window.localStorage.getItem('imba-localization')
+		return saved if saved and languages[saved]
+		return preferred if languages[preferred]
+		return default 
 	
 	set active name
-		if name and languages[name]
-			#active = name
-		else
-			#active = languages[preferred] ? preferred : default
-		onchange(#active) if onchange isa Function
+		name = name and languages[name] ? name : active
+		if window.localStorage.getItem('imba-localization') != name
+			window.localStorage.setItem('imba-localization', name)
+			onchange(name) if onchange isa Function
+		
