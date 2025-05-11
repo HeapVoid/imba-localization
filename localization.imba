@@ -1,4 +1,4 @@
-export class Localization
+export class LocalizationState
 	onready
 	onerror
 	onchange

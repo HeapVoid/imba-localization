@@ -54,10 +54,10 @@ Add this to your HTML head to load the localization file simultaneously with you
 
 ```imba
 # app.imba
-import { Localization } from 'imba-localization'
+import { LocalizationState } from 'imba-localization'
 
 # Create an instance with the JSON URL and optional default language
-const loc = new Localization("path/to/lang.json", "en")
+const loc = new LocalizationState("path/to/lang.json", "en")
 
 # Set up event handlers
 loc.onready = do
@@ -69,7 +69,7 @@ loc.onready = do
   console.log loc['user']['profile']  # Accessing nested properties
 
 loc.onerror = do(error, details)
-  # The Localization object can return following types of errors:
+  # The LocalizationState object can return following types of errors:
   # 'no_localization_file' - if there were a problem when downloading JSON file
   # 'no_default_localization' - if there is no localization in the file for the default language
   # 'no_localization_key' - if there is no requiered (from the interface) key in the file
@@ -123,7 +123,7 @@ Your localization file should follow this format:
 ### Constructor
 
 ```imba
-new Localization(url, default = 'en')
+new LocalizationState(url, default = 'en')
 ```
 
 - `url`: Path to your JSON localization file
@@ -148,8 +148,8 @@ new Localization(url, default = 'en')
 A customizable dropdown component that allows users to select from available in the JSON localization file languages.
 
 ```imba
-import { Localization, LanguageSelector } from 'imba-localization'
-const loc = new Localization("path/to/lang.json", "en")
+import { LocalizationState, LanguageSelector } from 'imba-localization'
+const loc = new LocalizationState("path/to/lang.json", "en")
 
 # In your UI component
 tag AppHeader
@@ -209,8 +209,8 @@ css
 LanguageSelector can be easily customized through CSS and Imba tag (class) inheritance. Here how the above classes can be adjusted via the inheritance:
 
 ```imba
-import { Localization, LanguageSelector } from 'imba-localization'
-const loc = new Localization("path/to/lang.json", "en")
+import { LocalizationState, LanguageSelector } from 'imba-localization'
+const loc = new LocalizationState("path/to/lang.json", "en")
 
 # Create an inheritent class
 tag Languages < LanguageSelector
