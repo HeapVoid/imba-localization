@@ -148,10 +148,8 @@ new Localization(url, default = 'en')
 A customizable dropdown component that allows users to select from available in the JSON localization file languages.
 
 ```imba
-import { Localization } from 'imba-localization'
+import { Localization, LanguageSelector } from 'imba-localization'
 const loc = new Localization("path/to/lang.json", "en")
-
-import { LanguageSelector } from 'imba-localization/components'
 
 # In your UI component
 tag AppHeader
@@ -211,7 +209,8 @@ css
 LanguageSelector can be easily customized through CSS and Imba tag (class) inheritance. Here how the above classes can be adjusted via the inheritance:
 
 ```imba
-import { LanguageSelector } from 'imba-localization/components'
+import { Localization, LanguageSelector } from 'imba-localization'
+const loc = new Localization("path/to/lang.json", "en")
 
 # Create an inheritent class
 tag Languages < LanguageSelector
@@ -262,7 +261,7 @@ tag SomeIcon
 The default arrow icon used in the LanguageSelector component is available as a separate icon (in case for some reason you don't want to use [imba-phosphor-icons](https://www.npmjs.com/package/imba-phosphor-icons) package by Sindre).
 
 ```imba
-import {ArrowIcon} from 'imba-localization/components'
+import {ArrowIcon} from 'imba-localization'
 
 tag App
 	<self>
