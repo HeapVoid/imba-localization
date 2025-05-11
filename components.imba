@@ -4,14 +4,14 @@ export tag ArrowIcon
 			<path d="M213.66,165.66a8,8,0,0,1-11.32,0L128,91.31,53.66,165.66a8,8,0,0,1-11.32-11.32l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,213.66,165.66Z">
 
 export tag LanguageSelector
-	engine
+	state
 	icons = "https://kapowaz.github.io/square-flags/flags/##.svg"
 	#dropdown = false
 	arrow = ArrowIcon
 
 	def onselect key
 		#dropdown = false
-		engine.active = key
+		state.active = key
 
 	css
 		$ease: 0.5s
@@ -36,14 +36,14 @@ export tag LanguageSelector
 
 	<self [pos:rel] @mouseenter=(#dropdown = true) @mouseleave=mouseleave>
 		<div.main [pos:rel d:hcc] .main-active=#dropdown>
-			<img.main-flag src=icon(engine[engine.active].$.flag)>
-			<div.main-name> engine.$.name
+			<img.main-flag src=icon(state[state.active].$.flag)>
+			<div.main-name> state.$.name
 			<{arrow}.main-arrow [scale-y:1]=#dropdown>
 		
 		if #dropdown
 			<div$menu.menu [pos:abs w:100% > max-content o@off:0] ease>
-				for own key, value of engine.languages
-					<div.menu-item @click=onselect(key) [d:none]=(key == engine.active)>
+				for own key, value of state.languages
+					<div.menu-item @click=onselect(key) [d:none]=(key == state.active)>
 						<img.menu-item-icon src=icon(value.$.flag)>
 						<span.menu-item-text> value.$.name
 		

@@ -156,7 +156,7 @@ import { LanguageSelector } from 'imba-localization/components'
 # In your UI component
 tag AppHeader
     <self>
-      <LanguageSelector engine=loc> # engine attribute is mandatory
+      <LanguageSelector state=loc> # state attribute is mandatory
 ```
 
 To make this component work as intended, your JSON file will need some adjustments. For each supported language you will need to define the display name for the language and also the country code for the flag to show (for example `en` language is used in `gb` and `us` countries):
@@ -223,7 +223,7 @@ tag Languages < LanguageSelector
 # Using the adjusted component
 tag MyApp
     <self>
-      <Languages engine=loc>
+      <Languages state=loc>
 ```
 
 #### Flag collections
