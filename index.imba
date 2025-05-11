@@ -37,6 +37,7 @@ export class Localization
 				console.log('There is no Localization for the default language', default)
 			return
 		onready! if onready isa Function
+		onchange(active) if onchange isa Function
 
 	get active
 		const saved = window.localStorage.getItem('imba-localization')
