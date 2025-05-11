@@ -11,7 +11,7 @@ A lightweight Imba module for loading and handling JSON-based localization files
 - 🧠 **Intuitive access** - Proxy-based access to translation strings
 - 📡 **Event handling** - Support for `onready`, `onchange`, and `onerror` events
 - 🚀 **Simple integration** - Easy to use in any Imba-based web application
-- 🧩 **`<LanguageSelector>`** - Plug and play component for switching languages
+- 🧩 **`<LocalizationSelector>`** - Plug and play component for switching languages
 
 ## 📘 Notes
 
@@ -143,18 +143,18 @@ new LocalizationState(url, default = 'en')
 
 ## 🧩 Components
 
-### LanguageSelector
+### LocalizationSelector
 
 A customizable dropdown component that allows users to select from available in the JSON localization file languages.
 
 ```imba
-import { LocalizationState, LanguageSelector } from 'imba-localization'
+import { LocalizationState, LocalizationSelector } from 'imba-localization'
 const loc = new LocalizationState("path/to/lang.json", "en")
 
 # In your UI component
 tag AppHeader
     <self>
-      <LanguageSelector state=loc> # state attribute is mandatory
+      <LocalizationSelector state=loc> # state attribute is mandatory
 ```
 
 To make this component work as intended, your JSON file will need some adjustments. For each supported language you will need to define the display name for the language and also the country code for the flag to show (for example `en` language is used in `gb` and `us` countries):
@@ -209,11 +209,11 @@ css
 LanguageSelector can be easily customized through CSS and Imba tag (class) inheritance. Here how the above classes can be adjusted via the inheritance:
 
 ```imba
-import { LocalizationState, LanguageSelector } from 'imba-localization'
+import { LocalizationState, LocalizationSelector } from 'imba-localization'
 const loc = new LocalizationState("path/to/lang.json", "en")
 
 # Create an inheritent class
-tag Languages < LanguageSelector
+tag Languages < LocalizationSelector
   css
     $ease: 1s
     .menu-item rd:2px
@@ -230,7 +230,7 @@ tag MyApp
 You can redefine the collection of flag icons through the `icons` attribute:
 
 ```imba
-<LanguageSelector icons='https://flagicons.lipis.dev/flags/4x3/##.svg'>
+<LocalizationSelector icons='https://flagicons.lipis.dev/flags/4x3/##.svg'>
 ```
 There are many flag collections out there:
 - https://kapowaz.github.io/square-flags/flags/##.svg (default one)
@@ -253,12 +253,12 @@ tag SomeIcon
 			<path d="...">
 
 
-<LanguageSelector arrow=SomeIcon>
+<LocalizationSelector arrow=SomeIcon>
 ```
 
 ### ArrowIcon
 
-The default arrow icon used in the LanguageSelector component is available as a separate icon (in case for some reason you don't want to use [imba-phosphor-icons](https://www.npmjs.com/package/imba-phosphor-icons) package by Sindre).
+The default arrow icon used in the LocalizationSelector component is available as a separate icon (in case for some reason you don't want to use [imba-phosphor-icons](https://www.npmjs.com/package/imba-phosphor-icons) package by Sindre).
 
 ```imba
 import {ArrowIcon} from 'imba-localization'
