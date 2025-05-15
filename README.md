@@ -175,36 +175,36 @@ Here are CSS classes (and one variable) you can redefine:
 css
   $ease: 0.5s
   .main 
-    cursor:pointer
-    rd:8px px:15px py:8px 
-    bgc:light-dark(#000000/10, #FFFFFF/20) 
-    fw:500 fs:13px 
-    ead:$ease
-	.main-active 
-    bgc:light-dark(#000000/20, #FFFFFF/30)
-	.main-flag 
-    mr:10px rd:50% w:20px h:20px
-	.main-name 
-    mr:10px
-	.main-arrow 
-    w:16px h:16px ml:auto
-    fill:light-dark(#000000,#FFFFFF) 
-    scale-y:-1 
-    ead:$ease
-	.menu 
-    t:100% l:50% x:-50% mt:2px rd:8px rd:8px py:5px zi:999
-    fw:500 fs:13px
-    backdrop-filter:blur(20px) 
-    bgc:light-dark(#000000/5, #FFFFFF/10) 
-    ead:$ease
-	.menu-item 
-    cursor:pointer
-    d:hflex px:10px py:5px rd:8px m:5px
-    bg@hover:light-dark(#000000/10, #FFFFFF/20)
-	.menu-item-icon 
-    h:20px w:20px mr:10px rd:50%
-	.menu-item-text 
-    fs:13px
+      cursor:pointer
+      rd:8px px:15px py:8px 
+      bgc:light-dark(#000000/10, #FFFFFF/20) 
+      fw:500 fs:13px 
+      ead:$ease
+  .main-active 
+      bgc:light-dark(#000000/20, #FFFFFF/30)
+  .main-flag 
+      mr:10px rd:50% w:20px h:20px
+  .main-name 
+      mr:10px
+  .main-arrow 
+      w:16px h:16px ml:auto
+      fill:light-dark(#000000,#FFFFFF) 
+      scale-y:-1 
+      ead:$ease
+  .menu 
+      t:100% l:50% x:-50% mt:2px rd:8px rd:8px py:5px zi:999
+      fw:500 fs:13px
+      backdrop-filter:blur(20px) 
+      bgc:light-dark(#000000/5, #FFFFFF/10) 
+      ead:$ease
+  .menu-item 
+      cursor:pointer
+      d:hflex px:10px py:5px rd:8px m:5px
+      bg@hover:light-dark(#000000/10, #FFFFFF/20)
+  .menu-item-icon 
+      h:20px w:20px mr:10px rd:50%
+  .menu-item-text 
+      fs:13px
 ```
 LanguageSelector can be easily customized through CSS and Imba tag (class) inheritance. Here how the above classes can be adjusted via the inheritance:
 
