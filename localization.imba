@@ -74,7 +74,7 @@ export tag LocalizationSelector
 		.main-name mr:10px
 		.main-arrow w:16px h:16px fill:light-dark(#000000,#FFFFFF) ml:auto scale-y:-1 ead:$ease
 		.menu t:100% l:50% x:-50% zi:999 backdrop-filter:blur(20px) mt:2px rd:8px rd:8px py:5px bgc:light-dark(#000000/5, #FFFFFF/10) fw:500 fs:13px  ead:$ease
-		.menu-item d:hflex px:10px py:5px rd:8px cursor:pointer bg@hover:light-dark(#000000/10, #FFFFFF/20) m:5px
+		.menu-item d:hflex ai:center px:10px py:5px rd:8px cursor:pointer bg@hover:light-dark(#000000/10, #FFFFFF/20) m:5px
 		.menu-item-icon h:20px w:20px mr:10px rd:50%
 		.menu-item-text fs:13px
 
