@@ -11,7 +11,7 @@ A lightweight Imba module for loading and handling JSON-based localization files
 - 🧠 **Intuitive access** - Proxy-based access to translation strings
 - 📡 **Event handling** - Support for `onready`, `onchange`, and `onerror` events
 - 🚀 **Simple integration** - Easy to use in any Imba-based web application
-- 🧩 **`<LocalizationSelector>`** - Plug and play component for switching languages
+- 🧩 **`<language-selector>`** - Plug and play tag component for switching languages
 
 ## 📘 Notes
 
@@ -54,10 +54,10 @@ Add this to your HTML head to load the localization file simultaneously with you
 
 ```imba
 # app.imba
-import { LocalizationState } from 'imba-localization'
+import { Localization } from 'imba-localization'
 
 # Create an instance with the JSON URL and optional default language
-const loc = new LocalizationState("path/to/lang.json", "en")
+const loc = new Localization("path/to/lang.json", "en")
 
 # Set up event handlers
 loc.onready = do
@@ -69,7 +69,7 @@ loc.onready = do
   console.log loc['user']['profile']  # Accessing nested properties
 
 loc.onerror = do(error, details)
-  # The LocalizationState object can return following types of errors:
+  # The Localization object can return following types of errors:
   # 'no_localization_file' - if there were a problem when downloading JSON file
   # 'no_default_localization' - if there is no localization in the file for the default language
   # 'no_localization_key' - if there is no requiered (from the interface) key in the file
@@ -123,7 +123,7 @@ Your localization file should follow this format:
 ### Constructor
 
 ```imba
-new LocalizationState(url, default = 'en')
+new Localization(url, default = 'en')
 ```
 
 - `url`: Path to your JSON localization file
@@ -148,13 +148,15 @@ new LocalizationState(url, default = 'en')
 A customizable dropdown component that allows users to select from available in the JSON localization file languages.
 
 ```imba
-import { LocalizationState, LocalizationSelector } from 'imba-localization'
-const loc = new LocalizationState("path/to/lang.json", "en")
+import { Localization } from 'imba-localization'
+const loc = new Localization("path/to/lang.json", "en")
 
-# In your UI component
+# after importing Localization object 
+# <language-selector> tag will be available 
+# in any of you project your UI component
 tag AppHeader
     <self>
-      <LocalizationSelector state=loc> # state attribute is mandatory
+      <language-selector state=loc> # state attribute is mandatory
 ```
 
 To make this component work as intended, your JSON file will need some adjustments. For each supported language you will need to define the display name for the language and also the country code for the flag to show (for example `en` language is used in `gb` and `us` countries):
@@ -189,8 +191,10 @@ css
   .main-arrow 
       w:16px h:16px ml:auto
       fill:light-dark(#000000,#FFFFFF) 
-      scale-y:-1 
-      ead:$ease
+      transition: transform $ease ease
+      scale-y:-1
+  .main-arrow-active
+      scale-y:1
   .menu 
       t:100% l:50% x:-50% mt:2px rd:8px rd:8px py:5px zi:999
       fw:500 fs:13px
@@ -206,14 +210,19 @@ css
   .menu-item-text 
       fs:13px
 ```
-LanguageSelector can be easily customized through CSS and Imba tag (class) inheritance. Here how the above classes can be adjusted via the inheritance:
+`<language-selector>` can be easily customized through CSS and Imba tag (class) inheritance. Here how the above classes can be adjusted via the inheritance, or through CSS selectors:
 
 ```imba
-import { LocalizationState, LocalizationSelector } from 'imba-localization'
-const loc = new LocalizationState("path/to/lang.json", "en")
+
+import { Localization } from 'imba-localization'
+const loc = new Localization("path/to/lang.json", "en")
+
+# --------------------
+# Inheritance
+# --------------------
 
 # Create an inheritent class
-tag Languages < LocalizationSelector
+tag custom-languages < language-selector
   css
     $ease: 1s
     .menu-item rd:2px
@@ -222,7 +231,34 @@ tag Languages < LocalizationSelector
 # Using the adjusted component
 tag MyApp
     <self>
-      <Languages state=loc>
+      <custom-languages state=loc>
+
+
+# --------------------
+# CSS selectors
+# --------------------
+
+global css
+  language-selector
+    @not(#_) # is needed for higher precedence
+      .main
+        bgc: #992033
+        bd: 1px solid #992033
+      .main-active
+        bgc: blue2
+        bd: 1px solid #992033
+      .menu
+        bgc: #992033
+        bd: 1px solid #992033
+      .menu-item
+        bgc@hover: orange4
+        c@hover: black
+
+# Using component that will be restyled
+tag MyApp
+    <self>
+      <language-selector state=loc>
+
 ```
 
 #### Flag collections
@@ -230,7 +266,7 @@ tag MyApp
 You can redefine the collection of flag icons through the `icons` attribute:
 
 ```imba
-<LocalizationSelector icons='https://flagicons.lipis.dev/flags/4x3/##.svg'>
+<language-selector icons='https://flagicons.lipis.dev/flags/4x3/##.svg'>
 ```
 There are many flag collections out there:
 - https://kapowaz.github.io/square-flags/flags/##.svg (default one)
@@ -247,13 +283,12 @@ You can use any other collection you prefer, just change the actual country code
 You can use any arrow icon you prefer (or remove it though CSS) by passing a tag of the image to the LanguageSelector `arrow` attribute:
 
 ```imba
-tag SomeIcon
-	<self>
-		<svg viewBox="..." xmlns="http://www.w3.org/2000/svg">
-			<path d="...">
+const arrow = 
+  <svg viewBox="..." xmlns="http://www.w3.org/2000/svg">
+    <path d="...">
 
 
-<LocalizationSelector arrow=SomeIcon>
+<language-selector arrow=arrow>
 ```
 
 ### ArrowIcon
@@ -261,10 +296,10 @@ tag SomeIcon
 The default arrow icon used in the LocalizationSelector component is available as a separate icon (in case for some reason you don't want to use [imba-phosphor-icons](https://www.npmjs.com/package/imba-phosphor-icons) package by Sindre).
 
 ```imba
-import {ArrowIcon} from 'imba-localization'
+import {svg-arrow-down} from 'imba-localization'
 
 tag App
 	<self>
-		<ArrowIcon>
+		<{svg-arrow-down}>
 			css w:20px h:20px stroke:red
 ```
