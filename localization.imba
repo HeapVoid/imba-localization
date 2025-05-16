@@ -67,16 +67,16 @@ tag language-selector
 
 	css
 		$ease: 0.5s
-		.main rd:8px px:15px py:8px cursor:pointer bgc:light-dark(#000000/10, #FFFFFF/20) fw:500 fs:13px ead:$ease
-		.main-active bgc:light-dark(#000000/20, #FFFFFF/30)
-		.main-flag mr:10px rd:50% w:20px h:20px
-		.main-name mr:10px
-		.main-arrow w:16px h:16px fill:light-dark(#000000,#FFFFFF) ml:auto scale-y:-1
-		.main-arrow-active scale-y:1
-		.menu t:100% l:50% x:-50% zi:999 backdrop-filter:blur(20px) mt:2px rd:8px rd:8px py:5px bgc:light-dark(#000000/5, #FFFFFF/10) fw:500 fs:13px ead:$ease
-		.menu-item d:hflex ai:center px:10px py:5px rd:8px cursor:pointer bg@hover:light-dark(#000000/10, #FFFFFF/20) m:5px
-		.menu-item-icon h:20px w:20px mr:10px rd:50%
-		.menu-item-text fs:13px
+		.main rd:8px px:15px py:8px cursor:pointer bgc:light-dark(#000000/10, #FFFFFF/20) fw:500 fs:13px ead:$ease bd:1px solid transparent
+		.main-active bgc:light-dark(#000000/20, #FFFFFF/30) bd:1px solid transparent
+		.main-flag mr:10px rd:50% w:20px h:20px bd:1px solid transparent
+		.main-name mr:10px bd:1px solid transparent
+		.main-arrow w:16px h:16px fill:light-dark(#000000,#FFFFFF) ml:auto scale-y:-1 bd:1px solid transparent
+		.main-arrow-active scale-y:1 bd:1px solid transparent
+		.menu t:100% l:50% x:-50% zi:999 backdrop-filter:blur(20px) mt:2px rd:8px rd:8px py:5px bgc:light-dark(#000000/5, #FFFFFF/10) fw:500 fs:13px ead:$ease bd:1px solid transparent
+		.menu-item d:hflex ai:center px:10px py:5px rd:8px cursor:pointer bg@hover:light-dark(#000000/10, #FFFFFF/20) m:5px bd:1px solid transparent
+		.menu-item-icon h:20px w:20px mr:10px rd:50% bd:1px solid transparent
+		.menu-item-text fs:13px bd:1px solid transparent
 
 	def icon country
 		return icons.replace('##',country)
