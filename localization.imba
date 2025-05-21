@@ -51,32 +51,24 @@ export class Localization
 			window.localStorage.setItem('imba-localization', name)
 			onchange(name) if onchange isa Function
 
-export const svg-arrow-down = 
-	<svg viewBox="0 0 256 256">
-		<path d="M213.66,165.66a8,8,0,0,1-11.32,0L128,91.31,53.66,165.66a8,8,0,0,1-11.32-11.32l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,213.66,165.66Z">
+export const path-arrow-down = <path d="M213.66,165.66a8,8,0,0,1-11.32,0L128,91.31,53.66,165.66a8,8,0,0,1-11.32-11.32l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,213.66,165.66Z">
 
 tag language-selector
 	state
 	icons = "https://kapowaz.github.io/square-flags/flags/##.svg"
 	#dropdown = false
-	arrow = svg-arrow-down
+	arrow = path-arrow-down
+	
+	def setup
+		if data
+			state.active = data
+		else
+			data = state.active
 
 	def onselect key
 		#dropdown = false
+		data = key
 		state.active = key
-
-	css
-		$ease: 0.5s
-		.main rd:8px px:15px py:8px cursor:pointer bgc:light-dark(#000000/10, #FFFFFF/20) fw:500 fs:13px ead:$ease bd:1px solid transparent
-		.main-active bgc:light-dark(#000000/20, #FFFFFF/30) bd:1px solid transparent
-		.main-flag mr:10px rd:50% w:20px h:20px bd:1px solid transparent
-		.main-name mr:10px bd:1px solid transparent
-		.main-arrow w:16px h:16px fill:light-dark(#000000,#FFFFFF) ml:auto scale-y:-1 bd:1px solid transparent
-		.main-arrow-active scale-y:1 bd:1px solid transparent
-		.menu t:100% l:50% x:-50% zi:999 backdrop-filter:blur(20px) mt:2px rd:8px rd:8px py:5px bgc:light-dark(#000000/5, #FFFFFF/10) fw:500 fs:13px ead:$ease bd:1px solid transparent
-		.menu-item d:hflex ai:center px:10px py:5px rd:8px cursor:pointer bg@hover:light-dark(#000000/10, #FFFFFF/20) m:5px bd:1px solid transparent
-		.menu-item-icon h:20px w:20px mr:10px rd:50% bd:1px solid transparent
-		.menu-item-text fs:13px bd:1px solid transparent
 
 	def icon country
 		return icons.replace('##',country)
@@ -87,15 +79,29 @@ tag language-selector
 		const inside = e.clientY >= menu.bottom || e.clientY <= rect.top || (e.clientX <= rect.left and e.clientY <= rect.bottom) || (e.clientX <= menu.left and e.clientY >= menu.top) || (e.clientX >= rect.right and e.clientY <= rect.bottom) || (e.clientX >= menu.right and e.clientY >= menu.top)
 		#dropdown = !inside
 
+	css 
+		$ease: 0.5s
+		.container rd:8px px:15px py:8px cursor:pointer bgc:light-dark(#000000/10, #FFFFFF/20) fw:500 fs:13px ead:$ease bd:1px solid transparent
+			@.active bgc:light-dark(#000000/20, #FFFFFF/30) bd:1px solid transparent
+		.flag mr:10px rd:50% w:20px h:20px bd:1px solid transparent
+		.name mr:10px bd:1px solid transparent
+		.arrow w:16px h:16px fill:light-dark(#000000,#FFFFFF) ml:auto scale-y:-1 bd:1px solid transparent
+			@.active scale-y:1 bd:1px solid transparent
+		.menu t:100% l:50% x:-50% zi:999 backdrop-filter:blur(20px) mt:2px rd:8px rd:8px py:5px bgc:light-dark(#000000/5, #FFFFFF/10) fw:500 fs:13px ead:$ease bd:1px solid transparent
+		.item d:hflex ai:center px:10px py:5px rd:8px cursor:pointer bg@hover:light-dark(#000000/10, #FFFFFF/20) m:5px bd:1px solid transparent
+		.icon h:20px w:20px mr:10px rd:50% bd:1px solid transparent
+		.text fs:13px bd:1px solid transparent
+
 	<self [pos:rel] @mouseenter=(#dropdown = true) @mouseleave=mouseleave>
-		<div.main [pos:rel d:hcc] .main-active=#dropdown>
-			<img.main-flag src=icon(state[state.active].$.flag)>
-			<div.main-name> state.$.name
-			<{arrow}.main-arrow [ead:$ease] .main-arrow-active=#dropdown>
+		<div.container [pos:rel d:hcc] .active=#dropdown>
+			<img.flag src=icon(state[state.active].$.flag)>
+			<div.name> state.$.name
+			<svg.arrow [ead:$ease] .active=#dropdown viewBox="0 0 256 256">
+				<{arrow}>
 		
 		if #dropdown
 			<div$menu.menu [pos:abs w:100% > max-content o@off:0] ease>
 				for own key, value of state.languages
-					<div.menu-item @click=onselect(key) [d:none]=(key == state.active)>
-						<img.menu-item-icon src=icon(value.$.flag)>
-						<span.menu-item-text> value.$.name
+					<div.item @click=onselect(key) [d:none]=(key == state.active)>
+						<img.icon src=icon(value.$.flag)>
+						<span.text> value.$.name

@@ -292,10 +292,7 @@ You can use any other collection you prefer, just change the actual country code
 You can use any arrow icon you prefer (or remove it though CSS) by passing a tag of the image to the LanguageSelector `arrow` attribute:
 
 ```imba
-const arrow = 
-  <svg viewBox="..." xmlns="http://www.w3.org/2000/svg">
-    <path d="...">
-
+const arrow = <path d="...">
 
 <language-selector arrow=arrow>
 ```
@@ -305,10 +302,12 @@ const arrow =
 The default arrow icon used in the LocalizationSelector component is available as a separate icon (in case for some reason you don't want to use [imba-phosphor-icons](https://www.npmjs.com/package/imba-phosphor-icons) package by Sindre).
 
 ```imba
-import {svg-arrow-down} from 'imba-localization'
+import {path-arrow-down} from 'imba-localization'
 
 tag App
 	<self>
-		<{svg-arrow-down}>
-			css w:20px h:20px stroke:red
+    <svg viewBox="0 0 256 256">
+      css w:20px h:20px stroke:red
+		  <{svg-arrow-down}>
+			
 ```
