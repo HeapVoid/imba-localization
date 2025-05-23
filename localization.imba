@@ -58,6 +58,7 @@ tag language-selector
 	icons = "https://kapowaz.github.io/square-flags/flags/##.svg"
 	#dropdown = false
 	arrow = path-arrow-down
+	passive = false
 	
 	def setup
 		if data
@@ -74,10 +75,19 @@ tag language-selector
 		return icons.replace('##',country)
 
 	def mouseleave e
+		return if passive
 		const rect = self.getBoundingClientRect!
 		const menu = $menu.getBoundingClientRect!
 		const inside = e.clientY >= menu.bottom || e.clientY <= rect.top || (e.clientX <= rect.left and e.clientY <= rect.bottom) || (e.clientX <= menu.left and e.clientY >= menu.top) || (e.clientX >= rect.right and e.clientY <= rect.bottom) || (e.clientX >= menu.right and e.clientY >= menu.top)
 		#dropdown = !inside
+
+	def mouseenter
+		return if passive
+		#dropdown = true
+
+	def click
+		return if !passive
+		#dropdown = !#dropdown
 
 	css 
 		$ease: 0.5s
@@ -92,7 +102,7 @@ tag language-selector
 		.icon h:20px w:20px mr:10px rd:50% bd:1px solid transparent
 		.text fs:13px bd:1px solid transparent
 
-	<self [pos:rel] @mouseenter=(#dropdown = true) @mouseleave=mouseleave>
+	<self [pos:rel] @mouseenter=mouseenter @mouseleave=mouseleave @click=click>
 		<div.container [pos:rel d:hcc] .active=#dropdown>
 			<img.flag src=icon(state[state.active].$.flag)>
 			<div.name> state.$.name
@@ -102,6 +112,6 @@ tag language-selector
 		if #dropdown
 			<div$menu.menu [pos:abs w:100% > max-content o@off:0] ease>
 				for own key, value of state.languages
-					<div.item @click=onselect(key) [d:none]=(key == state.active)>
+					<div.item @click.trap=onselect(key) [d:none]=(key == state.active)>
 						<img.icon src=icon(value.$.flag)>
 						<span.text> value.$.name
