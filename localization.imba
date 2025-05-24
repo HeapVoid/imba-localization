@@ -5,6 +5,8 @@ export class Localization
 	languages = {}
 	preferred = (window..navigator..language || 'en-US').slice(0, 2)
 	default
+	ready = false
+	errors = {}
 
 	def constructor url, dft = 'en'
 		default = dft
@@ -15,10 +17,16 @@ export class Localization
 		
 		return new Proxy self, {
 			get: do(target, p, receiver)
+				if !ready
+					console.log("Request before localization is ready", p)
+					return
+				return if errors[p]
 				return Reflect.get(target, p, receiver) if self[p]
 				return target.languages[p] if target.languages[p]
 				return target.languages[active][p] if target.languages[active] and target.languages[active][p]
-				onerror('no_localization_key', p) if onerror isa Function
+				if !errors[p]
+					onerror('no_localization_key', p) if onerror isa Function
+					errors[p] = true
 				return ''
 		}
 				
@@ -36,6 +44,7 @@ export class Localization
 			else
 				console.log('There is no Localization for the default language', default)
 			return
+		ready = true
 		onready! if onready isa Function
 		onchange(active) if onchange isa Function
 
@@ -50,6 +59,7 @@ export class Localization
 		if window.localStorage.getItem('imba-localization') != name
 			window.localStorage.setItem('imba-localization', name)
 			onchange(name) if onchange isa Function
+			errors = {}
 
 export const path-arrow-down = <path d="M213.66,165.66a8,8,0,0,1-11.32,0L128,91.31,53.66,165.66a8,8,0,0,1-11.32-11.32l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,213.66,165.66Z">
 
