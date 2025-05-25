@@ -17,11 +17,11 @@ export class Localization
 		
 		return new Proxy self, {
 			get: do(target, p, receiver)
+				return Reflect.get(target, p, receiver) if self[p] !== undefined
 				if !ready
-					console.log("Request before localization is ready", p)
+					console.log("Request before localization is ready:", p)
 					return
 				return if errors[p]
-				return Reflect.get(target, p, receiver) if self[p]
 				return target.languages[p] if target.languages[p]
 				return target.languages[active][p] if target.languages[active] and target.languages[active][p]
 				if !errors[p]
@@ -45,6 +45,7 @@ export class Localization
 				console.log('There is no Localization for the default language', default)
 			return
 		ready = true
+		errors = {}
 		onready! if onready isa Function
 		onchange(active) if onchange isa Function
 
