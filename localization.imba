@@ -6,10 +6,19 @@ export class Localization
 	preferred = (window..navigator..language || 'en-US').slice(0, 2)
 	default
 	ready = false
-	errors = {}
+	err = {
+		cache: {}
+		throw: do(code, details) 
+			return if err.cache[code]
+			if onerror isa Function
+				onerror(code, details)
+			else
+				console.log "Localization error:", code, details
+			err.cache[code] = true
+	}
 
-	def constructor url, dft = 'en'
-		default = dft
+	def constructor url, fallback = 'en'
+		default = fallback
 		window.fetch(url)
 		.then(do(response) response.json!)
 		.then(do(data) _finalize(data, undefined))
@@ -19,35 +28,26 @@ export class Localization
 			get: do(target, p, receiver)
 				return Reflect.get(target, p, receiver) if self[p] !== undefined
 				if !ready
-					console.log("Request before localization is ready:", p)
+					err.throw("Request before localization is ready:", p)
 					return
-				return if errors[p]
+				return if err.cache[p]
 				return target.languages[p] if target.languages[p]
 				return target.languages[active][p] if target.languages[active] and target.languages[active][p]
-				if !errors[p]
-					onerror('no_localization_key', p) if onerror isa Function
-					errors[p] = true
+				err.throw('no_localization_key', p)
 				return ''
 		}
 				
 	def _finalize data, error
-		if error
-			if onerror isa Function
-				onerror('no_localization_file',error) 
-			else
-				console.log('Localization file was not loaded', error)
-			return
-		languages = data if data
-		if !languages[default]
-			if onerror isa Function
-				onerror('no_default_localization', default)
-			else
-				console.log('There is no Localization for the default language', default)
-			return
-		ready = true
-		errors = {}
-		onready! if onready isa Function
-		onchange(active) if onchange isa Function
+		if error or !data
+			err.throw('no_localization_file',error) 
+		elif !data[default]
+			err.throw('no_default_localization', default)
+		else
+			languages = data
+			ready = true
+			err.cache = {}
+			onready! if onready isa Function
+			onchange(active) if onchange isa Function
 
 	get active
 		const saved = window.localStorage.getItem('imba-localization')
@@ -60,7 +60,7 @@ export class Localization
 		if window.localStorage.getItem('imba-localization') != name
 			window.localStorage.setItem('imba-localization', name)
 			onchange(name) if onchange isa Function
-			errors = {}
+			err.cache = {}
 
 export const path-arrow-down = <path d="M213.66,165.66a8,8,0,0,1-11.32,0L128,91.31,53.66,165.66a8,8,0,0,1-11.32-11.32l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,213.66,165.66Z">
 
@@ -83,16 +83,26 @@ tag language-selector
 		state.active = key
 
 	def flag language
-		let settings = language.$
-		return undefined if !settings
-		let flag = settings.flag
-		return undefined if !flag
+		const settings = language.$
+		if !settings
+			state.err.throw('no_localization_key', '$')
+			return undefined
+		const flag = settings.flag
+		if !flag
+			state.err.throw('no_localization_key', '$.flag')
+			return undefined
 		return icons.replace('##',flag)
 
 	def name language
-		let settings = language.$
-		return undefined if !settings
-		return settings.name
+		const settings = language.$
+		if !settings
+			state.err.throw('no_localization_key', '$')
+			return undefined
+		const name = settings.name
+		if !name
+			state.err.throw('no_localization_key', '$.name')
+			return undefined
+		return name
 
 	def mouseleave e
 		return if passive
@@ -125,7 +135,7 @@ tag language-selector
 	<self [pos:rel] @mouseenter=mouseenter @mouseleave=mouseleave @click=click>
 		<div.container [pos:rel d:hcc] .active=#dropdown>
 			<img.flag src=flag(state[state.active])>
-			<div.name> state.$.name
+			<div.name> name(state[state.active])
 			<svg.arrow [ead:$ease] .active=#dropdown viewBox="0 0 256 256">
 				<{arrow}>
 		
