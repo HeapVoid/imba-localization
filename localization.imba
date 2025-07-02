@@ -82,8 +82,17 @@ tag language-selector
 		data = key
 		state.active = key
 
-	def icon country
-		return icons.replace('##',country)
+	def flag language
+		let settings = language.$
+		return undefined if !settings
+		let flag = settings.flag
+		return undefined if !flag
+		return icons.replace('##',flag)
+
+	def name language
+		let settings = language.$
+		return undefined if !settings
+		return settings.name
 
 	def mouseleave e
 		return if passive
@@ -115,7 +124,7 @@ tag language-selector
 
 	<self [pos:rel] @mouseenter=mouseenter @mouseleave=mouseleave @click=click>
 		<div.container [pos:rel d:hcc] .active=#dropdown>
-			<img.flag src=icon(state[state.active].$.flag)>
+			<img.flag src=flag(state[state.active])>
 			<div.name> state.$.name
 			<svg.arrow [ead:$ease] .active=#dropdown viewBox="0 0 256 256">
 				<{arrow}>
@@ -124,5 +133,5 @@ tag language-selector
 			<div$menu.menu [pos:abs w:100% > max-content o@off:0] ease>
 				for own key, value of state.languages
 					<div.item @click.trap=onselect(key) [d:none]=(key == state.active)>
-						<img.icon src=icon(value.$.flag)>
-						<span.text> value.$.name
+						<img.icon src=flag(value)>
+						<span.text> name(value)
