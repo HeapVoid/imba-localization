@@ -10,7 +10,7 @@ export class Localization
 		cache: {}
 		throw: do(code, details) 
 			return if err.cache[code]
-			if onerror isa Function
+			if onerror isa Function and ready
 				onerror(code, details)
 			else
 				console.log "Localization error:", code, details
