@@ -33,15 +33,15 @@ export class Localization
 				return if err.cache[p]
 				return target.languages[p] if target.languages[p]
 				return target.languages[active][p] if target.languages[active] and target.languages[active][p]
-				err.throw('no_localization_key', p)
+				err.throw('localization-no-key', p)
 				return ''
 		}
 				
 	def _finalize data, error
 		if error or !data
-			err.throw('no_localization_file',error) 
+			err.throw('localization-no-file',error) 
 		elif !data[default]
-			err.throw('no_default_localization', default)
+			err.throw('localization-no-default', default)
 		else
 			languages = data
 			ready = true
@@ -85,22 +85,22 @@ tag language-selector
 	def flag language
 		const settings = language.$
 		if !settings
-			state.err.throw('no_localization_key', '$')
+			state.err.throw('localization-no-key', '$')
 			return undefined
 		const flag = settings.flag
 		if !flag
-			state.err.throw('no_localization_key', '$.flag')
+			state.err.throw('localization-no-key', '$.flag')
 			return undefined
 		return icons.replace('##',flag)
 
 	def name language
 		const settings = language.$
 		if !settings
-			state.err.throw('no_localization_key', '$')
+			state.err.throw('localization-no-key', '$')
 			return undefined
 		const name = settings.name
 		if !name
-			state.err.throw('no_localization_key', '$.name')
+			state.err.throw('localization-no-key', '$.name')
 			return undefined
 		return name
 
