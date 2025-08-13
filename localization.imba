@@ -8,7 +8,7 @@ export class Localization
 	ready = false
 	err = {
 		cache: {}
-		throw: do(code, details) 
+		throw: do(code, details)
 			return if err.cache[code]
 			if onerror isa Function and ready
 				onerror(code, details)
@@ -26,14 +26,15 @@ export class Localization
 		
 		return new Proxy self, {
 			get: do(target, p, receiver)
-				return Reflect.get(target, p, receiver) if self[p] !== undefined
-				if !ready
-					err.throw("Request before localization is ready:", p)
+				if Reflect.has(target, p)
+					return Reflect.get(target, p, receiver)
+				if !target.ready
+					target.err.throw("Request before localization is ready:", p)
 					return
-				return if err.cache[p]
+				return if target.err.cache[p]
 				return target.languages[p] if target.languages[p]
-				return target.languages[active][p] if target.languages[active] and target.languages[active][p]
-				err.throw('localization-no-key', p)
+				return target.languages[target.active][p] if target.languages[target.active] and target.languages[target.active][p]
+				target.err.throw('localization-no-key', p)
 				return ''
 		}
 				
@@ -121,7 +122,7 @@ tag language-selector
 
 	css 
 		$ease: 0.5s
-		.container rd:8px px:15px py:8px cursor:pointer bgc:light-dark(#000000/10, #FFFFFF/20) fw:500 fs:13px ead:$ease bd:1px solid transparent
+		.container rd:8px px:15px py:8px bgc:light-dark(#000000/10, #FFFFFF/20) fw:500 fs:13px ead:$ease bd:1px solid transparent
 			@.active bgc:light-dark(#000000/20, #FFFFFF/30) bd:1px solid transparent
 		.flag mr:10px rd:50% w:20px h:20px bd:1px solid transparent
 		.name mr:10px bd:1px solid transparent
@@ -133,13 +134,14 @@ tag language-selector
 		.text fs:13px bd:1px solid transparent
 
 	<self [pos:rel] @mouseenter=mouseenter @mouseleave=mouseleave @click=click>
-		<div.container [pos:rel d:hcc] .active=#dropdown>
+		<div.container [pos:rel d:hcc] .active=#dropdown [cursor:pointer]=(Object(state.languages).keys > 1)>
 			<img.flag src=flag(state[state.active])>
 			<div.name> name(state[state.active])
-			<svg.arrow [ead:$ease] .active=#dropdown viewBox="0 0 256 256">
-				<{arrow}>
+			if Object(state.languages).keys > 1
+				<svg.arrow [ead:$ease] .active=#dropdown viewBox="0 0 256 256">
+					<{arrow}>
 		
-		if #dropdown
+		if #dropdown and Object(state.languages).keys > 1
 			<div$menu.menu [pos:abs w:100% > max-content o@off:0] ease>
 				for own key, value of state.languages
 					<div.item @click.trap=onselect(key) [d:none]=(key == state.active)>
