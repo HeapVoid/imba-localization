@@ -10,6 +10,7 @@ A lightweight Imba module for loading and handling JSON-based localization files
 - 🔄 **Smart fallback system** - Falls back to a default language when needed
 - 🧠 **Intuitive access** - Proxy-based access to translation strings
 - 📡 **Event handling** - Support for `onready`, `onchange`, and `onerror` events
+- 🧾 **Type declarations** - Includes package-level TypeScript declarations for editor and language-server imports
 - 🚀 **Simple integration** - Easy to use in any Imba-based web application
 - 🧩 **`<language-selector>`** - Plug and play tag component for switching languages
 
@@ -134,6 +135,13 @@ new Localization(url, default = 'en')
 - `active`: Get or set the code of the active language
 - `languages`: Object containing all loaded language data
 - `preferred`: Detected browser language (first 2 characters of `navigator.language`)
+
+### Methods
+
+- `lookup(path, fallback = '')`: Reads a nested value by dot path or path array
+- `text(path, fallback = '', data = null)`: Reads a localized string and replaces `{key}` placeholders from `data`
+- `table(path)`: Reads a nested object table, returning `{}` when missing
+- `render(value, data = null)`: Replaces `{key}` placeholders in any string-like value
 
 ### Events
 

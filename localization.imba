@@ -101,6 +101,32 @@ export class Localization
 				target.err.throw('localization-no-key', p)
 				return ''
 		}
+
+	def render value, data = null
+		let text = String(value or '')
+		return text unless data and typeof data == 'object'
+		text.replace /\{([^}]+)\}/g, do(_match, key)
+			const value = data[key]
+			if value == undefined or value == null then '' else String(value)
+
+	def lookup path, fallback = ''
+		const keys = if Array.isArray(path) then path else String(path or '').split('.').filter(do(part) part)
+		let value = languages..[active] or languages..[default] or {}
+		for key in keys
+			if value and typeof value == 'object' and value[key] != undefined
+				value = value[key]
+			else
+				return fallback
+		value
+
+	def text path, fallback = '', data = null
+		const value = lookup(path, fallback)
+		return render(value, data) if typeof value == 'string' or typeof value == 'number'
+		render(fallback, data)
+
+	def table path
+		const value = lookup(path, {})
+		if value and typeof value == 'object' then value else {}
 				
 	def _finalize data, error
 		if error or !data

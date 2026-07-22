@@ -1,6 +1,6 @@
 {
   "name": "imba-localization",
-  "version": "0.4.9",
+  "version": "0.4.12",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HeapVoid/imba-localization.git"
@@ -8,11 +8,25 @@
   "main": "localization.imba",
   "module": "localization.imba",
   "browser": "localization.imba",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./localization.imba",
+      "default": "./localization.imba"
+    },
+    "./localization.imba": {
+      "types": "./index.d.ts",
+      "import": "./localization.imba",
+      "default": "./localization.imba"
+    }
+  },
   "description": "A class to make using language localizations in Imba easier.",
   "keywords": ["imba", "theme", "localization"],
   "license": "MIT",
   "type": "module",
   "files": [
-    "localization.imba"
+    "localization.imba",
+    "index.d.ts"
   ]
 }
