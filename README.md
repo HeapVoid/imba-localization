@@ -8,6 +8,7 @@ A lightweight Imba module for loading and handling JSON-based localization files
 - 🔍 **Automatic language detection** - Uses the user's browser language settings
 - 💾 **Persistence**: Stores user choice in local storage across sessions
 - 🔄 **Smart fallback system** - Falls back to a default language when needed
+- 📦 **Optional split loading** - Loads only the selected language file and caches languages on demand
 - 🧠 **Intuitive access** - Proxy-based access to translation strings
 - 📡 **Event handling** - Support for `onready`, `onchange`, and `onerror` events
 - 🧾 **Type declarations** - Includes package-level TypeScript declarations for editor and language-server imports
@@ -28,6 +29,13 @@ A lightweight Imba module for loading and handling JSON-based localization files
 npm install imba-localization
 # or Bun
 bun add imba-localization
+```
+
+For local module development:
+
+```bash
+bun install
+bun run test
 ```
 
 ## 🚀 Quick Start
@@ -71,9 +79,9 @@ loc.onready = do
 
 loc.onerror = do(error, details)
   # The Localization object can return following types of errors:
-  # 'no_localization_file' - if there were a problem when downloading JSON file
-  # 'no_default_localization' - if there is no localization in the file for the default language
-  # 'no_localization_key' - if there is no requiered (from the interface) key in the file
+  # 'localization-no-file' - if there was a problem downloading a JSON file
+  # 'localization-no-default' - if there is no default localization
+  # 'localization-no-key' - if a requested interface key is missing
   console.error "Localization error:", error, details
 
 loc.onchange = do(lang_key)
@@ -94,7 +102,9 @@ console.log loc.languages[loc.active]
 
 ```
 
-## 📄 JSON Structure
+## 📄 Bundle JSON Structure
+
+The original single-file format remains supported and is the default mode:
 
 Your localization file should follow this format:
 
@@ -119,22 +129,80 @@ Your localization file should follow this format:
 }
 ```
 
+## 📦 Split Language Files
+
+Split mode loads a small manifest first and then downloads only the selected language. Previously loaded languages are kept in memory and are not requested again.
+
+```imba
+const loc = new Localization('/localization/languages.json', 'en', {split: true})
+
+# Optional when application startup needs to wait explicitly.
+await loc.pending
+
+# Assignment still works and starts an asynchronous language switch.
+loc.active = 'fr'
+
+# Use `use` when the caller needs to wait for the new dictionary.
+await loc.use('fr')
+```
+
+Recommended file structure:
+
+```text
+public/localization/
+├── languages.json
+├── en.json
+├── fr.json
+└── ru.json
+```
+
+`languages.json` contains only language metadata and file locations:
+
+```json
+{
+  "default": "en",
+  "languages": {
+    "en": { "name": "English", "flag": "us", "src": "en.json" },
+    "fr": { "name": "Français", "flag": "fr", "src": "fr.json" },
+    "ru": { "name": "Русский", "flag": "ru", "src": "ru.json" }
+  }
+}
+```
+
+Each language file contains the dictionary directly:
+
+```json
+{
+  "welcome": "Welcome",
+  "goodbye": "Goodbye",
+  "user": {
+    "profile": "Profile",
+    "settings": "Settings"
+  }
+}
+```
+
+If `src` is omitted, the language code is used as the filename (`ru` → `ru.json`). The manifest `default` overrides the constructor fallback when present. A failed switch keeps the current language active and reports `localization-no-file` through `onerror`.
+
 ## 🛠️ API Reference
 
 ### Constructor
 
 ```imba
-new Localization(url, default = 'en')
+new Localization(url, default = 'en', options = {})
 ```
 
 - `url`: Path to your JSON localization file
 - `default`: Fallback language code (defaults to 'en')
+- `options.split`: Treat `url` as a language manifest and load dictionaries on demand
 
 ### Properties
 
 - `active`: Get or set the code of the active language
-- `languages`: Object containing all loaded language data
+- `languages`: Available languages; unloaded split entries contain only `$` metadata
 - `preferred`: Detected browser language (first 2 characters of `navigator.language`)
+- `loaded`: Map of language codes whose dictionaries are already in memory
+- `pending`: Promise settled after initial localization loading finishes
 
 ### Methods
 
@@ -142,6 +210,8 @@ new Localization(url, default = 'en')
 - `text(path, fallback = '', data = null)`: Reads a localized string and replaces `{key}` placeholders from `data`
 - `table(path)`: Reads a nested object table, returning `{}` when missing
 - `render(value, data = null)`: Replaces `{key}` placeholders in any string-like value
+- `use(language)`: Loads and activates a language, returning a Promise
+- `load(language)`: Loads a split dictionary without activating it
 
 ### Events
 

@@ -1,4 +1,6 @@
 # Emoji flags mapping - comprehensive list by region
+export {Localization} from './state.imba'
+
 export const flags = {
 	# Europe
 	'gb': '🇬🇧', 'us': '🇺🇸', 'ru': '🇷🇺', 'de': '🇩🇪', 'fr': '🇫🇷',
@@ -61,97 +63,6 @@ export const flags = {
 	'eu': '🇪🇺', 'un': '🇺🇳', 'ac': '🇦🇨', 'ta': '🇹🇦', 'cp': '🇨🇵',
 	'dg': '🇩🇬', 'ea': '🇪🇦', 'ic': '🇮🇨', 'xk': '🇽🇰'
 }
-
-export class Localization
-	onready
-	onerror
-	onchange
-	languages = {}
-	preferred = (window..navigator..language || 'en-US').slice(0, 2)
-	default
-	ready = false
-	err = {
-		cache: {}
-		throw: do(code, details)
-			return if err.cache[code]
-			if onerror isa Function and ready
-				onerror(code, details)
-			else
-				console.log "Localization error:", code, details
-			err.cache[code] = true
-	}
-
-	def constructor url, fallback = 'en'
-		default = fallback
-		window.fetch(url)
-		.then(do(response) response.json!)
-		.then(do(data) _finalize(data, undefined))
-		.catch(do(error) _finalize(undefined, error))
-		
-		return new Proxy self, {
-			get: do(target, p, receiver)
-				if Reflect.has(target, p)
-					return Reflect.get(target, p, receiver)
-				if !target.ready
-					target.err.throw("Request before localization is ready:", p)
-					return
-				return if target.err.cache[p]
-				return target.languages[p] if target.languages[p]
-				return target.languages[target.active][p] if target.languages[target.active] and target.languages[target.active][p]
-				target.err.throw('localization-no-key', p)
-				return ''
-		}
-
-	def render value, data = null
-		let text = String(value or '')
-		return text unless data and typeof data == 'object'
-		text.replace /\{([^}]+)\}/g, do(_match, key)
-			const value = data[key]
-			if value == undefined or value == null then '' else String(value)
-
-	def lookup path, fallback = ''
-		const keys = if Array.isArray(path) then path else String(path or '').split('.').filter(do(part) part)
-		let value = languages..[active] or languages..[default] or {}
-		for key in keys
-			if value and typeof value == 'object' and value[key] != undefined
-				value = value[key]
-			else
-				return fallback
-		value
-
-	def text path, fallback = '', data = null
-		const value = lookup(path, fallback)
-		return render(value, data) if typeof value == 'string' or typeof value == 'number'
-		render(fallback, data)
-
-	def table path
-		const value = lookup(path, {})
-		if value and typeof value == 'object' then value else {}
-				
-	def _finalize data, error
-		if error or !data
-			err.throw('localization-no-file',error) 
-		elif !data[default]
-			err.throw('localization-no-default', default)
-		else
-			languages = data
-			ready = true
-			err.cache = {}
-			onready! if onready isa Function
-			onchange(active) if onchange isa Function
-
-	get active
-		const saved = window.localStorage.getItem('imba-localization')
-		return saved if saved and languages[saved]
-		return preferred if languages[preferred]
-		return default 
-	
-	set active name
-		name = name and languages[name] ? name : active
-		if window.localStorage.getItem('imba-localization') != name
-			window.localStorage.setItem('imba-localization', name)
-			onchange(name) if onchange isa Function
-			err.cache = {}
 
 export const path-arrow-down = <path d="M213.66,165.66a8,8,0,0,1-11.32,0L128,91.31,53.66,165.66a8,8,0,0,1-11.32-11.32l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,213.66,165.66Z">
 

@@ -1,6 +1,6 @@
 {
   "name": "imba-localization",
-  "version": "0.4.12",
+  "version": "0.5.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HeapVoid/imba-localization.git"
@@ -25,8 +25,17 @@
   "keywords": ["imba", "theme", "localization"],
   "license": "MIT",
   "type": "module",
+  "scripts": {
+    "test": "bimba state.imba --outdir .cache/test --external imba --external imba/runtime && bun test"
+  },
+  "devDependencies": {
+    "bimba-cli": "latest",
+    "imba": "latest",
+    "typescript": "^5.9.3"
+  },
   "files": [
     "localization.imba",
+    "state.imba",
     "index.d.ts"
   ]
 }
